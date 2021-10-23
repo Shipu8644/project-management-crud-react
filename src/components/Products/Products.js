@@ -11,16 +11,19 @@ const Products = () => {
     }, [])
 
     const handleProductDelete = id => {
-        fetch(`http://localhost:7000/products/${id}`, {
-            method: "DELETE"
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.deletedCount > 0) {
-                    const remainingProducts = products.filter(product => product._id !== id);
-                    setProducts(remainingProducts);
-                }
+        const proceed = window.confirm('Are you sure to delete?');
+        if (proceed) {
+            fetch(`http://localhost:7000/products/${id}`, {
+                method: "DELETE"
             })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.deletedCount > 0) {
+                        const remainingProducts = products.filter(product => product._id !== id);
+                        setProducts(remainingProducts);
+                    }
+                })
+        }
     }
 
     return (
