@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
@@ -8,6 +9,20 @@ const Products = () => {
             .then(res => res.json())
             .then(data => setProducts(data))
     }, [])
+
+    const handleProductDelete = id => {
+        fetch(`http://localhost:7000/products/${id}`, {
+            method: "DELETE"
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.deletedCount > 0) {
+                    const remainingProducts = products.filter(product => product._id !== id);
+                    setProducts(remainingProducts);
+                }
+            })
+    }
+
     return (
         <div>
             <h1>Number of products: {products.length} </h1>
@@ -21,9 +36,9 @@ const Products = () => {
                         quantity={product.quantity}
                         <br />
                         <br />
-                        <button>Update</button>
+                        <NavLink to={`/products/update/${product._id}`}>  <button>Update</button></NavLink>
                         <br />
-                        <button>Delete</button>
+                        <button onClick={() => handleProductDelete(product._id)}>Delete</button>
                         <br />
                         <br />
                     </li>)
